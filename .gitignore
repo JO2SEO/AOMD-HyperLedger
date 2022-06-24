@@ -1,0 +1,9 @@
+asset/transfer-basic/wallet
+!asset/transfer-basic/wallet/.gitkeep
+
+network/organizations/fabric-ca/*
+network/organizations/ordererOrganizations/*
+network/organizations/peerOrganizations/*
+network/system-genesis-block/*
+network/*.tar.gz
+network/log.txt
