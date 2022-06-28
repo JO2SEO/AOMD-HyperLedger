@@ -1,3 +1,5 @@
+#!/bin/bash
+
 export PATH=${PWD}/bin:$PATH
 export FABRIC_CFG_PATH=${PWD}/config
 
@@ -35,18 +37,9 @@ function createOrgs() {
     sudo chown -R thuthi:thuthi .build
     sudo chmod -R 755 .build
 
-    createEducationOrg
-
-    # infoln "Creating Org2 Identities"
-
-    # createOrg2
-
-    # infoln "Creating Orderer Org Identities"
-
-    # createOrderer
-
-  infoln "Generating CCP files for Org1 and Org2"
-  ./organizations/ccp-generate.sh
+    createOrganizations
+    # infoln "Generating CCP files for Org1 and Org2"
+    # ./organizations/ccp-generate.sh
 }
 
 function createConsortium() {
