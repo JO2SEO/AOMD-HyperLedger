@@ -66,25 +66,25 @@ function createEducationOrg() {
   mkdir -p ${FABRIC_CA_CLIENT_HOME}/msp/tlscacerts
   cp ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/tls/tlscacerts/* ${FABRIC_CA_CLIENT_HOME}/msp/tlscacerts/ca.crt
 
-  mkdir -p ${FABRIC_CA_CLIENT_HOME}/tlsca
+  mkdir -p ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/tlsca
   cp ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/tls/tlscacerts/* ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/tlsca/tlsca.${ORG_NAME}-cert.pem
 
-  mkdir -p ${FABRIC_CA_CLIENT_HOME}/ca
+  mkdir -p ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/ca
   cp ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/msp/cacerts/* ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/ca/ca.${ORG_NAME}-cert.pem
 
-#   infoln "Generating the user msp"
-#   set -x
-#   fabric-ca-client enroll -u https://user1:user1pw@localhost:6055 --caname ca-org1 -M ${PWD}/organizations/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp --tls.certfiles ${PWD}/organizations/fabric-ca/org1/tls-cert.pem
-#   { set +x; } 2>/dev/null
+  infoln "Generating the user msp"
+  set -x
+  fabric-ca-client enroll -u https://user1:user1pw@localhost:6055 --caname ${CA_NAME} -M ${FABRIC_CA_CLIENT_HOME}/users/User1@${ORG_NAME}/msp --tls.certfiles ${CERT_FILE}
+  { set +x; } 2>/dev/null
 
-#   cp ${PWD}/organizations/peerOrganizations/org1.example.com/msp/config.yaml ${PWD}/organizations/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/config.yaml
+  cp ${FABRIC_CA_CLIENT_HOME}/msp/config.yaml ${FABRIC_CA_CLIENT_HOME}/users/User1@${ORG_NAME}/msp/config.yaml
 
-#   infoln "Generating the org admin msp"
-#   set -x
-#   fabric-ca-client enroll -u https://org1admin:org1adminpw@localhost:6055 --caname ca-org1 -M ${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp --tls.certfiles ${PWD}/organizations/fabric-ca/org1/tls-cert.pem
-#   { set +x; } 2>/dev/null
+  infoln "Generating the org admin msp"
+  set -x
+  fabric-ca-client enroll -u https://org1admin:org1adminpw@localhost:6055 --caname ${CA_NAME} -M ${FABRIC_CA_CLIENT_HOME}/users/Admin@${ORG_NAME}/msp --tls.certfiles ${CERT_FILE}
+  { set +x; } 2>/dev/null
 
-#   cp ${PWD}/organizations/peerOrganizations/org1.example.com/msp/config.yaml ${PWD}/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/config.yaml
+  cp ${FABRIC_CA_CLIENT_HOME}/msp/config.yaml ${FABRIC_CA_CLIENT_HOME}/users/Admin@${ORG_NAME}/msp/config.yaml
 }
 
 function createOrg2() {
