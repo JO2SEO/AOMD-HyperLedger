@@ -1,1 +1,0 @@
-ERROR	2022-06-23 02:02:10,229	0	org.hyperledger.fabric.gateway.impl.TransactionImpl	[main]	No valid proposal responses received. 2 peer error responses: error in simulation: transaction returned with failure: Error: The asset asset70 does not exist; error in simulation: transaction returned with failure: Error: The asset asset70 does not exist

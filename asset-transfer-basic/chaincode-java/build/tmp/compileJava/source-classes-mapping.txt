@@ -1,5 +1,0 @@
-org/hyperledger/fabric/samples/assettransfer/AssetTransfer.java
- org.hyperledger.fabric.samples.assettransfer.AssetTransfer
- org.hyperledger.fabric.samples.assettransfer.AssetTransfer$AssetTransferErrors
-org/hyperledger/fabric/samples/assettransfer/Asset.java
- org.hyperledger.fabric.samples.assettransfer.Asset
