@@ -1,0 +1,35 @@
+---
+name: fabric-network-${ORG}
+version: 1.0.0
+client:
+  organization: ${ORG}
+  connection:
+    timeout:
+      peer:
+        endorser: '300'
+organizations:
+  Org${ORG}:
+    mspid: ${ORG}MSP
+    peers:
+    - peer0.${ORG}.jo2seo.com
+    certificateAuthorities:
+    - ca.${ORG}.jo2seo.com
+peers:
+  peer0.${ORG}.jo2seo.com:
+    url: grpcs://localhost:${P0PORT}
+    tlsCACerts:
+      pem: |
+          ${PEERPEM}
+    grpcOptions:
+      ssl-target-name-override: peer0.${ORG}.jo2seo.com
+      hostnameOverride: peer0.${ORG}.jo2seo.com
+certificateAuthorities:
+  ca.${ORG}.jo2seo.com:
+    url: https://localhost:${CAPORT}
+    caName: ca-${ORG}
+    tlsCACerts:
+      pem: 
+        - |
+          ${CAPEM}
+    httpOptions:
+      verify: false
