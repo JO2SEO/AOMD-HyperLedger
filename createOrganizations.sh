@@ -68,11 +68,11 @@ function createOrganization() {
     mkdir -p ${FABRIC_CA_CLIENT_HOME}/msp/tlscacerts
     cp ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/tls/tlscacerts/* ${FABRIC_CA_CLIENT_HOME}/msp/tlscacerts/ca.crt
 
-    mkdir -p ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/tlsca
-    cp ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/tls/tlscacerts/* ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/tlsca/tlsca.${ORG_NAME}-cert.pem
+    mkdir -p ${FABRIC_CA_CLIENT_HOME}/${PEER0}/tlsca
+    cp ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/tls/tlscacerts/* ${FABRIC_CA_CLIENT_HOME}/${PEER0}/tlsca/tlsca.${ORG_NAME}-cert.pem
 
-    mkdir -p ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/ca
-    cp ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/msp/cacerts/* ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/ca/ca.${ORG_NAME}-cert.pem
+    mkdir -p ${FABRIC_CA_CLIENT_HOME}/${PEER0}/ca
+    cp ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/msp/cacerts/* ${FABRIC_CA_CLIENT_HOME}/${PEER0}/ca/ca.${ORG_NAME}-cert.pem
 
     infoln "Generating the user msp"
     set -x
@@ -165,10 +165,22 @@ function createOrderer() {
     cp $FABRIC_CA_CLIENT_HOME/msp/config.yaml $FABRIC_CA_CLIENT_HOME/users/Admin@$ORG_NAME/msp/config.yaml
 }
 
+function gen_cpp() {
+    ORG_GROUP_NAME=$1
+    ORG=$2
+    P0PORT=$3
+    CAPORT=$4
+    PEERPEM=./build/organizations/$ORG_GROUP_NAME/$ORG.jo2seo.com/tlsca/tlsca.$ORG.jo2seo.com-cert.pem
+    CAPEM=./build/organizations/$ORG_GROUP_NAME/$ORG.jo2seo.com/ca/ca.$ORG.jo2seo.com-cert.pem
+
+
+}
+
 function createOrganizations() {
     createOrganization ca-educationOrg1 educationOrganizations educationOrg1.jo2seo.com  6055
     createOrganization ca-awardOrg1 awardOrganizations awardOrg1.jo2seo.com 7055
     createOrganization ca-licenseOrg1 licenseOrganizations licenseOrg1.jo2seo.com 8055
     createOrderer ca-ordererOrg ordererOrganizations ordererOrg.jo2seo.com 9055 
-    #createAwardOrg
+
+    gen_ccp
 }
