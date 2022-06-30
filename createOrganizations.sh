@@ -1,17 +1,16 @@
 #!/bin/bash
 function createOrganization() {
+    infoln "Enrolling the CA admin"
     #Varaibles
     CA_NAME=$1
     ORG_GROUP_NAME=$2
     ORG_NAME=$3
     PORT=$4
     BUILD_FOLDER=${PWD}/.build/organizations
-    FABRIC_CA_CLIENT_HOME=${BUILD_FOLDER}/${ORG_GROUP_NAME}/${ORG_NAME}
+    export FABRIC_CA_CLIENT_HOME=${BUILD_FOLDER}/${ORG_GROUP_NAME}/${ORG_NAME}
     CERT_FILE=${BUILD_FOLDER}/fabric-ca/${CA_NAME}/tls-cert.pem
 
     mkdir -p ${FABRIC_CA_CLIENT_HOME}/msp
-
-    infoln "Enrolling the CA admin"
 
     set -x
     fabric-ca-client enroll -u https://admin:adminpw@localhost:$PORT --caname ${CA_NAME} --tls.certfiles ${CERT_FILE}
@@ -90,19 +89,19 @@ function createOrganization() {
 }
 
 function createOrderer() {
+    infoln "Enrolling the CA admin"
     CA_NAME=$1
     ORG_GROUP_NAME=$2
     ORG_NAME=$3
     PORT=$4
     BUILD_FOLDER=${PWD}/.build/organizations
-    FABRIC_CA_CLIENT_HOME=${BUILD_FOLDER}/${ORG_GROUP_NAME}/${ORG_NAME}
+    export FABRIC_CA_CLIENT_HOME=${BUILD_FOLDER}/${ORG_GROUP_NAME}/${ORG_NAME}
     CERT_FILE=${BUILD_FOLDER}/fabric-ca/${CA_NAME}/tls-cert.pem
-    HOST=orderer.jo2seo.com
+    HOST=orderer.aomd.com
 
     mkdir -p $FABRIC_CA_CLIENT_HOME/msp
     #mkdir -p organizations/ordererOrganizations/example.com
 
-    infoln "Enrolling the CA admin"
 
     #export FABRIC_CA_CLIENT_HOME=${PWD}/organizations/ordererOrganizations/example.com
 
@@ -152,10 +151,10 @@ function createOrderer() {
     cp $FABRIC_CA_CLIENT_HOME/orderers/$HOST/tls/keystore/* $FABRIC_CA_CLIENT_HOME/orderers/$HOST/tls/server.key
 
     mkdir -p $FABRIC_CA_CLIENT_HOME/orderers/$HOST/msp/tlscacerts
-    cp $FABRIC_CA_CLIENT_HOME/orderers/$HOST/tls/tlscacerts/* $FABRIC_CA_CLIENT_HOME/orderers/$HOST/msp/tlscacerts/tlsca.jo2seo.com-cert.pem
+    cp $FABRIC_CA_CLIENT_HOME/orderers/$HOST/tls/tlscacerts/* $FABRIC_CA_CLIENT_HOME/orderers/$HOST/msp/tlscacerts/tlsca.aomd.com-cert.pem
 
     mkdir -p $FABRIC_CA_CLIENT_HOME/msp/tlscacerts
-    cp $FABRIC_CA_CLIENT_HOME/orderers/$HOST/tls/tlscacerts/* $FABRIC_CA_CLIENT_HOME/msp/tlscacerts/tlsca.jo2seo.com-cert.pem
+    cp $FABRIC_CA_CLIENT_HOME/orderers/$HOST/tls/tlscacerts/* $FABRIC_CA_CLIENT_HOME/msp/tlscacerts/tlsca.aomd.com-cert.pem
 
     infoln "Generating the admin msp"
     set -x
@@ -174,8 +173,8 @@ function gen_ccp() {
     local ORG=$2
     local P0PORT=$3
     local CAPORT=$4
-    local PEERPEM=.build/organizations/$ORG_GROUP_NAME/$ORG.jo2seo.com/tlsca/tlsca.$ORG.jo2seo.com-cert.pem
-    local CAPEM=.build/organizations/$ORG_GROUP_NAME/$ORG.jo2seo.com/ca/ca.$ORG.jo2seo.com-cert.pem
+    local PEERPEM=.build/organizations/$ORG_GROUP_NAME/$ORG.aomd.com/tlsca/tlsca.$ORG.aomd.com-cert.pem
+    local CAPEM=.build/organizations/$ORG_GROUP_NAME/$ORG.aomd.com/ca/ca.$ORG.aomd.com-cert.pem
 
     local PP=$(one_line_pem $PEERPEM)
     local CP=$(one_line_pem $CAPEM)
@@ -184,14 +183,14 @@ function gen_ccp() {
         -e "s/\${CAPORT}/$CAPORT/" \
         -e "s#\${PEERPEM}#$PP#" \
         -e "s#\${CAPEM}#$CP#" \
-        config/ccp_template.json > .build/organizations/$ORG_GROUP_NAME/$ORG.jo2seo.com/connection-$ORG.json
+        config/ccp_template.json > .build/organizations/$ORG_GROUP_NAME/$ORG.aomd.com/connection-$ORG.json
 }
 
 function createOrganizations() {
-    createOrganization ca-educationOrg1 educationOrganizations educationOrg1.jo2seo.com  6055
-    createOrganization ca-awardOrg1 awardOrganizations awardOrg1.jo2seo.com 7055
-    createOrganization ca-licenseOrg1 licenseOrganizations licenseOrg1.jo2seo.com 8055
-    createOrderer ca-ordererOrg ordererOrganizations ordererOrg.jo2seo.com 9055 
+    createOrganization ca-educationOrg1 educationOrganizations educationOrg1.aomd.com  6055
+    createOrganization ca-awardOrg1 awardOrganizations awardOrg1.aomd.com 7055
+    createOrganization ca-licenseOrg1 licenseOrganizations licenseOrg1.aomd.com 8055
+    createOrderer ca-ordererOrg ordererOrganizations ordererOrg.aomd.com 9055 
 
     gen_ccp educationOrganizations educationOrg1 6050 6055
     gen_ccp awardOrganizations awardOrg1 7050 7055
