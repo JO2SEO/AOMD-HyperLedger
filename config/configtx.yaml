@@ -10,7 +10,7 @@ Organizations:
     - &OrdererOrg
         Name: OrdererOrg
         ID: OrdererMSP
-        MSPDir: ../.build/organizations/ordererOrganizations/ordererOrg.aomd.com/msp
+        MSPDir: ../.build/organizations/ordererOrganizations/orderer.aomd.com/msp
 
         Policies:
             Readers:
@@ -131,8 +131,8 @@ Orderer: &OrdererDefaults
         Consenters:
         - Host: orderer.aomd.com
           Port: 9050
-          ClientTLSCert: ../.build/organizations/ordererOrganizations/ordererOrg.aomd.com/orderers/orderer.aomd.com/tls/server.crt
-          ServerTLSCert: ../.build/organizations/ordererOrganizations/ordererOrg.aomd.com/orderers/orderer.aomd.com/tls/server.crt
+          ClientTLSCert: ../.build/organizations/ordererOrganizations/orderer.aomd.com/orderers/orderer.aomd.com/tls/server.crt
+          ServerTLSCert: ../.build/organizations/ordererOrganizations/orderer.aomd.com/orderers/orderer.aomd.com/tls/server.crt
 
     BatchTimeout: 2s
 

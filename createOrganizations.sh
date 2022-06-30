@@ -190,9 +190,11 @@ function createOrganizations() {
     createOrganization ca-educationOrg1 educationOrganizations educationOrg1.aomd.com  6055
     createOrganization ca-awardOrg1 awardOrganizations awardOrg1.aomd.com 7055
     createOrganization ca-licenseOrg1 licenseOrganizations licenseOrg1.aomd.com 8055
-    createOrderer ca-ordererOrg ordererOrganizations ordererOrg.aomd.com 9055 
+    createOrderer ca-ordererOrg ordererOrganizations orderer.aomd.com 9055 
 
     gen_ccp educationOrganizations educationOrg1 6050 6055
     gen_ccp awardOrganizations awardOrg1 7050 7055
     gen_ccp licenseOrganizations licenseOrg1 8050 8055
+
+    docker-compose -f config/docker/docker-compose-initial.yaml up -d 2>&1
 }
