@@ -135,6 +135,9 @@ if [ $1 == "down" ]; then
     deleteDocker
 elif [ $1 == "up" ]; then
     createOrgs
+elif [ $1 == "re" ]; then
+    deleteDocker
+    createOrgs
 elif [ $1 == "test" ]; then
     echo 'NodeOUs:
   Enable: true

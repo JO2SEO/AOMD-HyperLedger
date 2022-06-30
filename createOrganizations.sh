@@ -68,11 +68,11 @@ function createOrganization() {
     mkdir -p ${FABRIC_CA_CLIENT_HOME}/msp/tlscacerts
     cp ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/tls/tlscacerts/* ${FABRIC_CA_CLIENT_HOME}/msp/tlscacerts/ca.crt
 
-    mkdir -p ${FABRIC_CA_CLIENT_HOME}/${PEER0}/tlsca
-    cp ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/tls/tlscacerts/* ${FABRIC_CA_CLIENT_HOME}/${PEER0}/tlsca/tlsca.${ORG_NAME}-cert.pem
+    mkdir -p ${FABRIC_CA_CLIENT_HOME}/tlsca
+    cp ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/tls/tlscacerts/* ${FABRIC_CA_CLIENT_HOME}/tlsca/tlsca.${ORG_NAME}-cert.pem
 
-    mkdir -p ${FABRIC_CA_CLIENT_HOME}/${PEER0}/ca
-    cp ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/msp/cacerts/* ${FABRIC_CA_CLIENT_HOME}/${PEER0}/ca/ca.${ORG_NAME}-cert.pem
+    mkdir -p ${FABRIC_CA_CLIENT_HOME}/ca
+    cp ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/msp/cacerts/* ${FABRIC_CA_CLIENT_HOME}/ca/ca.${ORG_NAME}-cert.pem
 
     infoln "Generating the user msp"
     set -x
