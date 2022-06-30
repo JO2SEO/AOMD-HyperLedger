@@ -165,15 +165,26 @@ function createOrderer() {
     cp $FABRIC_CA_CLIENT_HOME/msp/config.yaml $FABRIC_CA_CLIENT_HOME/users/Admin@$ORG_NAME/msp/config.yaml
 }
 
-function gen_cpp() {
-    ORG_GROUP_NAME=$1
-    ORG=$2
-    P0PORT=$3
-    CAPORT=$4
-    PEERPEM=./build/organizations/$ORG_GROUP_NAME/$ORG.jo2seo.com/tlsca/tlsca.$ORG.jo2seo.com-cert.pem
-    CAPEM=./build/organizations/$ORG_GROUP_NAME/$ORG.jo2seo.com/ca/ca.$ORG.jo2seo.com-cert.pem
+function one_line_pem {
+    echo "`awk 'NF {sub(/\\n/, ""); printf "%s\\\\\\\n",$0;}' $1`"
+}
 
+function gen_ccp() {
+    local ORG_GROUP_NAME=$1
+    local ORG=$2
+    local P0PORT=$3
+    local CAPORT=$4
+    local PEERPEM=.build/organizations/$ORG_GROUP_NAME/$ORG.jo2seo.com/tlsca/tlsca.$ORG.jo2seo.com-cert.pem
+    local CAPEM=.build/organizations/$ORG_GROUP_NAME/$ORG.jo2seo.com/ca/ca.$ORG.jo2seo.com-cert.pem
 
+    local PP=$(one_line_pem $PEERPEM)
+    local CP=$(one_line_pem $CAPEM)
+    sed -e "s/\${ORG}/$ORG/" \
+        -e "s/\${P0PORT}/$P0PORT/" \
+        -e "s/\${CAPORT}/$CAPORT/" \
+        -e "s#\${PEERPEM}#$PP#" \
+        -e "s#\${CAPEM}#$CP#" \
+        config/ccp_template.json > .build/organizations/$ORG_GROUP_NAME/$ORG.jo2seo.com/connection-$ORG.json
 }
 
 function createOrganizations() {
@@ -182,5 +193,7 @@ function createOrganizations() {
     createOrganization ca-licenseOrg1 licenseOrganizations licenseOrg1.jo2seo.com 8055
     createOrderer ca-ordererOrg ordererOrganizations ordererOrg.jo2seo.com 9055 
 
-    gen_ccp
+    gen_ccp educationOrganizations educationOrg1 6050 6055
+    gen_ccp awardOrganizations awardOrg1 7050 7055
+    gen_ccp licenseOrganizations licenseOrg1 8050 8055
 }
