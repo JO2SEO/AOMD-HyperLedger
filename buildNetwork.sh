@@ -5,6 +5,7 @@ export FABRIC_CFG_PATH=${PWD}/config
 
 . utils.sh
 . createOrganizations.sh
+. createChannels.sh
 
 function deleteDocker() {
     infoln "remove build folder"
@@ -65,23 +66,12 @@ if [ $1 == "down" ]; then
 elif [ $1 == "up" ]; then
     createOrgs
     createConsortium
+    createChannels
 elif [ $1 == "re" ]; then
     deleteDocker
     createOrgs
     createConsortium
+    createChannels
 elif [ $1 == "test" ]; then
-    echo 'NodeOUs:
-  Enable: true
-  ClientOUIdentifier:
-    Certificate: cacerts/localhost-6055-ca-educationOrg1.pem
-    OrganizationalUnitIdentifier: client
-  PeerOUIdentifier:
-    Certificate: cacerts/localhost-6055-ca-educationOrg1.pem
-    OrganizationalUnitIdentifier: peer
-  AdminOUIdentifier:
-    Certificate: cacerts/localhost-6055-ca-educationOrg1.pem
-    OrganizationalUnitIdentifier: admin
-  OrdererOUIdentifier:
-    Certificate: cacerts/localhost-6055-ca-educationOrg1.pem
-    OrganizationalUnitIdentifier: orderer' > ${PWD}/.build/organizations/educationOrganizations/educationOrg1.aomd.com/msp/config.yaml
+    ./createChannels.sh
 fi

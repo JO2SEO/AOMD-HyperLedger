@@ -198,8 +198,42 @@ Profiles:
         Capabilities:
             - *OrdererCapabilities
       Consortiums:
-          SampleConsortium:
+          EducationConsortium:
               Organizations:
                   - *EducationOrg1 
+          AwardConsortium:
+              Organizations:
                   - *AwardOrg1
+          LicenseConsortium:
+              Organizations:
                   - *LicenseOrg1
+
+    EducationChannel:
+        Consortium: EducationConsortium
+        <<: *ChannelDefaults
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *EducationOrg1
+            Capabilities:
+                <<: *ApplicationCapabilities
+    
+    AwardChannel:
+        Consortium: AwardConsortium
+        <<: *ChannelDefaults
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *AwardOrg1
+            Capabilities:
+                <<: *ApplicationCapabilities
+    
+    LicenseChannel:
+        Consortium: LicenseConsortium
+        <<: *ChannelDefaults
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *LicenseOrg1
+            Capabilities:
+                <<: *ApplicationCapabilities
