@@ -204,6 +204,4 @@ function createOrganizations() {
     gen_ccp educationOrganizations educationOrg1 6050 6055
     gen_ccp awardOrganizations awardOrg1 7050 7055
     gen_ccp licenseOrganizations licenseOrg1 8050 8055
-
-    docker-compose -f config/docker/docker-compose-initial.yaml up -d 2>&1
 }

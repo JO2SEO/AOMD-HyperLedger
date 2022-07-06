@@ -18,12 +18,14 @@ function createChannel() {
     ORG_NAME=$3
     PEER_PORT=$4
     CHANNEL_NAME=$5
-    ORDER_PORT=9050 
+    ORDERER_PORT=9050 
     ORDERER_CA=.build/organizations/ordererOrganizations/orderer.aomd.com/orderers/orderer.aomd.com/msp/tlscacerts/tlsca.aomd.com-cert.pem
     export CORE_PEER_LOCALMSPID=$MSP_NAME
     export CORE_PEER_TLS_ROOTCERT_FILE=.build/organizations/$ORG_GROUP_NAME/$ORG_NAME.aomd.com/peers/peer0.$ORG_NAME.aomd.com/tls/ca.crt
     export CORE_PEER_MSPCONFIGPATH=.build/organizations/$ORG_GROUP_NAME/$ORG_NAME.aomd.com/users/Admin@$ORG_NAME.aomd.com/msp
     export CORE_PEER_ADDRESS=localhost:$PEER_PORT
+
+    infoln "$CHANNEL_NAME를 만드는 중입니다."
 
     local rc=1
     local COUNTER=1
@@ -31,7 +33,7 @@ function createChannel() {
         sleep 3
         set -x
 
-        peer channel create -o localhost:$ORDER_PORT -c $CHANNEL_NAME --ordererTLSHostnameOverride orderer.AOMD.com -f .build/channel-artifacts/${CHANNEL_NAME}.tx --outputBlock .build/channel-artifacts/${CHANNEL_NAME}.block --tls --cafile $ORDERER_CA >&log.txt
+        peer channel create -o localhost:$ORDERER_PORT -c $CHANNEL_NAME --ordererTLSHostnameOverride orderer.AOMD.com -f .build/channel-artifacts/${CHANNEL_NAME}.tx --outputBlock .build/channel-artifacts/${CHANNEL_NAME}.block --tls --cafile $ORDERER_CA >&log.txt
 
         res=$?
 		{ set +x; } 2>/dev/null
