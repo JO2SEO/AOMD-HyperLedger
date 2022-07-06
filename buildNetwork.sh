@@ -65,12 +65,12 @@ if [ $1 == "down" ]; then
     deleteDocker
 elif [ $1 == "up" ]; then
     createOrgs
-    createConsortium
+    # createConsortium
     createChannels
 elif [ $1 == "re" ]; then
     deleteDocker
     createOrgs
-    createConsortium
+    # createConsortium
     createChannels
 elif [ $1 == "test" ]; then
     ./createChannels.sh
