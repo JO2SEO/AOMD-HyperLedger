@@ -41,17 +41,17 @@ function createOrgs() {
     createOrganizations
 }
 
-function createConsortium() {
-  infoln "Generating Orderer Genesis block"
+# function createConsortium() {
+#   infoln "Generating Orderer Genesis block"
 
-  set -x
-  configtxgen -profile AOMD -channelID system-channel -outputBlock ./system-genesis-block/genesis.block
-  res=$?
-  { set +x; } 2>/dev/null
-  if [ $res -ne 0 ]; then
-    fatalln "Failed to generate orderer genesis block..."
-  fi
-}
+#   set -x
+#   configtxgen -profile AOMD -channelID system-channel -outputBlock ./system-genesis-block/genesis.block
+#   res=$?
+#   { set +x; } 2>/dev/null
+#   if [ $res -ne 0 ]; then
+#     fatalln "Failed to generate orderer genesis block..."
+#   fi
+# }
 
 CA_IMAGETAG="latest"
 COMPOSE_FILE_CA=config/docker/docker-compose-ca.yaml

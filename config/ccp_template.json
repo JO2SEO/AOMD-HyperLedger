@@ -15,27 +15,27 @@
         "${ORG}": {
             "mspid": "${ORG}MSP",
             "peers": [
-                "peer0.${ORG}.jo2seo.com"
+                "peer0.${ORG}.aomd.com"
             ],
             "certificateAuthorities": [
-                "ca.${ORG}.jo2seo.com"
+                "ca.${ORG}.aomd.com"
             ]
         }
     },
     "peers": {
-        "peer0.${ORG}.jo2seo.com": {
+        "peer0.${ORG}.aomd.com": {
             "url": "grpcs://localhost:${P0PORT}",
             "tlsCACerts": {
                 "pem": "${PEERPEM}"
             },
             "grpcOptions": {
-                "ssl-target-name-override": "peer0.${ORG}.jo2seo.com",
-                "hostnameOverride": "peer0.${ORG}.jo2seo.com"
+                "ssl-target-name-override": "peer0.${ORG}.aomd.com",
+                "hostnameOverride": "peer0.${ORG}.aomd.com"
             }
         }
     },
     "certificateAuthorities": {
-        "ca.${ORG}.jo2seo.com": {
+        "ca.${ORG}.aomd.com": {
             "url": "https://localhost:${CAPORT}",
             "caName": "ca-${ORG}",
             "tlsCACerts": {
