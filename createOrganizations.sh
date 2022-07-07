@@ -8,7 +8,7 @@ function createOrganization() {
     PORT=$4
     BUILD_FOLDER=${PWD}/.build/organizations
     export FABRIC_CA_CLIENT_HOME=${BUILD_FOLDER}/${ORG_GROUP_NAME}/${ORG_NAME}
-    CERT_FILE=${BUILD_FOLDER}/fabric-ca/${CA_NAME}/ca-cert.pem
+    CERT_FILE=${BUILD_FOLDER}/fabric-ca/${CA_NAME}/tls-cert.pem
 
     mkdir -p ${FABRIC_CA_CLIENT_HOME}
 
@@ -31,14 +31,15 @@ function createOrganization() {
             Certificate: cacerts/localhost-$PORT-$CA_NAME.pem
             OrganizationalUnitIdentifier: orderer" > ${FABRIC_CA_CLIENT_HOME}/msp/config.yaml
 
-    mkdir -p ${FABRIC_CA_CLIENT_HOME}/msp/tlscacerts
-    cp $CERT_FILE ${FABRIC_CA_CLIENT_HOME}/msp/tlscacerts/ca.crt
+    #! V2.3대응
+    # mkdir -p ${FABRIC_CA_CLIENT_HOME}/msp/tlscacerts
+    # cp $CERT_FILE ${FABRIC_CA_CLIENT_HOME}/msp/tlscacerts/ca.crt
 
-    mkdir -p ${FABRIC_CA_CLIENT_HOME}/tlsca
-    cp $CERT_FILE ${FABRIC_CA_CLIENT_HOME}/tlsca/tlsca.${ORG_NAME}-cert.pem
+    # mkdir -p ${FABRIC_CA_CLIENT_HOME}/tlsca
+    # cp $CERT_FILE ${FABRIC_CA_CLIENT_HOME}/tlsca/tlsca.${ORG_NAME}-cert.pem
 
-    mkdir -p ${FABRIC_CA_CLIENT_HOME}/ca
-    cp $CERT_FILE ${FABRIC_CA_CLIENT_HOME}/ca/ca.${ORG_NAME}-cert.pem
+    # mkdir -p ${FABRIC_CA_CLIENT_HOME}/ca
+    # cp $CERT_FILE ${FABRIC_CA_CLIENT_HOME}/ca/ca.${ORG_NAME}-cert.pem
 
     #Peer0 
     PEER0=peer0.${ORG_NAME}
@@ -73,6 +74,16 @@ function createOrganization() {
     cp ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/tls/signcerts/* ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/tls/server.crt
     cp ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/tls/keystore/* ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/tls/server.key
 
+    #! V2.3
+    mkdir -p ${FABRIC_CA_CLIENT_HOME}/msp/tlscacerts
+    cp ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/tls/tlscacerts/* ${FABRIC_CA_CLIENT_HOME}/msp/tlscacerts/ca.crt
+
+    mkdir -p ${FABRIC_CA_CLIENT_HOME}/tlsca
+    cp ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/tls/tlscacerts/* ${FABRIC_CA_CLIENT_HOME}/tlsca/tlsca.${ORG_NAME}-cert.pem
+
+    mkdir -p ${FABRIC_CA_CLIENT_HOME}/ca
+    cp ${FABRIC_CA_CLIENT_HOME}/peers/${PEER0}/msp/cacerts/* ${FABRIC_CA_CLIENT_HOME}/ca/ca.${ORG_NAME}-cert.pem
+
     infoln "Generating the user msp"
     set -x
     fabric-ca-client enroll -u https://user1:user1pw@localhost:$PORT --caname ${CA_NAME} -M ${FABRIC_CA_CLIENT_HOME}/users/User1@${ORG_NAME}/msp --tls.certfiles ${CERT_FILE}
@@ -96,7 +107,7 @@ function createOrderer() {
     PORT=$4
     BUILD_FOLDER=${PWD}/.build/organizations
     export FABRIC_CA_CLIENT_HOME=${BUILD_FOLDER}/${ORG_GROUP_NAME}/${ORG_NAME}
-    CERT_FILE=${BUILD_FOLDER}/fabric-ca/${CA_NAME}/ca-cert.pem
+    CERT_FILE=${BUILD_FOLDER}/fabric-ca/${CA_NAME}/tls-cert.pem
     HOST=orderer.aomd.com
 
     mkdir -p $FABRIC_CA_CLIENT_HOME
@@ -120,11 +131,12 @@ function createOrderer() {
             Certificate: cacerts/localhost-$PORT-$CA_NAME.pem
             OrganizationalUnitIdentifier: orderer" > $FABRIC_CA_CLIENT_HOME/msp/config.yaml
 
-    mkdir -p $FABRIC_CA_CLIENT_HOME/msp/tlscacerts
-    cp $CERT_FILE $FABRIC_CA_CLIENT_HOME/msp/tlscacerts/tlsca.aomd.com-cert.pem
+    #! V2.3 대응
+    # mkdir -p $FABRIC_CA_CLIENT_HOME/msp/tlscacerts
+    # cp $CERT_FILE $FABRIC_CA_CLIENT_HOME/msp/tlscacerts/tlsca.aomd.com-cert.pem
 
-    mkdir -p $FABRIC_CA_CLIENT_HOME/tlsca
-    cp $CERT_FILE $FABRIC_CA_CLIENT_HOME/tlsca/tlsca.aomd.com-cert.pem
+    # mkdir -p $FABRIC_CA_CLIENT_HOME/tlsca
+    # cp $CERT_FILE $FABRIC_CA_CLIENT_HOME/tlsca/tlsca.aomd.com-cert.pem
 
     infoln "Registering orderer"
     set -x
@@ -155,8 +167,8 @@ function createOrderer() {
     mkdir -p $FABRIC_CA_CLIENT_HOME/orderers/$HOST/msp/tlscacerts
     cp $FABRIC_CA_CLIENT_HOME/orderers/$HOST/tls/tlscacerts/* $FABRIC_CA_CLIENT_HOME/orderers/$HOST/msp/tlscacerts/tlsca.aomd.com-cert.pem
 
-    # mkdir -p $FABRIC_CA_CLIENT_HOME/msp/tlscacerts
-    # cp $FABRIC_CA_CLIENT_HOME/orderers/$HOST/tls/tlscacerts/* $FABRIC_CA_CLIENT_HOME/msp/tlscacerts/tlsca.aomd.com-cert.pem
+    mkdir -p $FABRIC_CA_CLIENT_HOME/msp/tlscacerts
+    cp $FABRIC_CA_CLIENT_HOME/orderers/$HOST/tls/tlscacerts/* $FABRIC_CA_CLIENT_HOME/msp/tlscacerts/tlsca.aomd.com-cert.pem
 
     infoln "Generating the admin msp"
     set -x
