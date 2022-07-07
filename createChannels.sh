@@ -43,13 +43,17 @@ function createChannel() {
     done
     cat log.txt
 
-    joinChannel $CHANNEL_NAME $ORG_NAME $PEER_PORT
+    joinChannel $CHANNEL_NAME $ORG_NAME
+    setAnchorPeer $ORG_NAME $CHANNEL_NAME
+
+    successln "채널 $CHANNEL_NAME을 생성하고, Organization들이 참여했습니다."
+
+    docker exec cli scripts/setAnchorPeer.sh $MSP_NAME $ORG_GROUP_NAME $ORG_NAME $PEER_PORT $CHANNEL_NAME 
 }
 
 function joinChannel() {
     CHANNEL_NAME=$1
     ORG_NAME=$2
-    PORT=$3
 
     FABRIC_CFG_PATH=$PWD
     BLOCKFILE=$PWD/.build/channel-artifacts/${CHANNEL_NAME}.block
@@ -82,12 +86,8 @@ function createChannels() {
     cp config/core.yaml ./core.yaml
 
     createChannel EducationOrg1MSP educationOrganizations educationOrg1 6051 educationchannel
-    # joinChannel educationchannel educationOrg1 6051
 
     createChannel AwardOrg1MSP awardOrganizations awardOrg1 7051 awardchannel
-    # joinChannel licensechannel licenseOrg1 8051
 
     createChannel LicenseOrg1MSP licenseOrganizations licenseOrg1 8051 licensechannel
-    # joinChannel awardchannel awardOrg1 7051
-    
 }
