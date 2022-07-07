@@ -3,7 +3,7 @@
 export PATH=${PWD}/bin:$PATH
 export FABRIC_CFG_PATH=${PWD}/config
 
-. utils.sh
+. config/scripts/utils.sh
 . createOrganizations.sh
 . createChannels.sh
 
