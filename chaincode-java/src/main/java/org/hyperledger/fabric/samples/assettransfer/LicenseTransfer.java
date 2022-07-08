@@ -36,7 +36,7 @@ public final class LicenseTransfer implements ContractInterface {
     }
 
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public License createLicense(
+    public License create(
             final Context context,
             final String id,
             final String title,
@@ -50,9 +50,9 @@ public final class LicenseTransfer implements ContractInterface {
         ChaincodeStub stub = context.getStub();
 
         if (exists(context, id)) {
-            String errorMesage = String.format("Asset %s already exists", id);
-            System.out.println(errorMesage);
-            throw new ChaincodeException(errorMesage, AssetTransferErrors.ASSET_ALREADY_EXISTS.toString());
+            String errorMessage = String.format("Asset %s already exists", id);
+            System.out.println(errorMessage);
+            throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_ALREADY_EXISTS.toString());
         }
 
         License license = new License(id, title, ownerId, publisher, publishedAt, LocalDateTime.now(), description, expireDate, qualificationNumber);
@@ -68,5 +68,19 @@ public final class LicenseTransfer implements ContractInterface {
         String json = stub.getStringState(id);
 
         return (json != null && !json.isEmpty());
+    }
+
+    @Transaction(intent = Transaction.TYPE.EVALUATE)
+    public License read(final Context context, final String id) {
+        ChaincodeStub stub = context.getStub();
+        String json = stub.getStringState(id);
+
+        if (!exists(context, id)) {
+            String errorMessage = String.format("Asset %s does not exists", id);
+            System.out.println(errorMessage);
+            throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_ALREADY_EXISTS.toString());
+        }
+        License license = genson.deserialize(json, License.class);
+        return license;
     }
 }
