@@ -9,3 +9,4 @@ network/*.tar.gz
 network/log.txt
 
 .build
+log.txt
