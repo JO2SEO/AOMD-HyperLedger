@@ -6,8 +6,12 @@ import org.hyperledger.fabric.contract.ContractInterface;
 import org.hyperledger.fabric.contract.annotation.*;
 import org.hyperledger.fabric.shim.ChaincodeException;
 import org.hyperledger.fabric.shim.ChaincodeStub;
+import org.hyperledger.fabric.shim.ledger.KeyValue;
+import org.hyperledger.fabric.shim.ledger.QueryResultsIterator;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Contract(
         name = "aomd",
@@ -82,5 +86,24 @@ public final class LicenseTransfer implements ContractInterface {
         }
         License license = genson.deserialize(json, License.class);
         return license;
+    }
+
+    @Transaction(intent = Transaction.TYPE.EVALUATE)
+    public String getAll(final Context context) {
+        ChaincodeStub stub = context.getStub();
+
+        List<License> queryResults = new ArrayList<>();
+
+        QueryResultsIterator<KeyValue> results = stub.getStateByRange("", "");
+
+        for (KeyValue result: results) {
+            License license = genson.deserialize(result.getStringValue(), License.class);
+            queryResults.add(license);
+            System.out.println(license.toString());
+        }
+
+        final String response = genson.serialize(queryResults);
+
+        return response;
     }
 }
