@@ -10,3 +10,6 @@ network/log.txt
 
 .build
 log.txt
+
+chaincode-java/.gradle
+chaincode-java/build
