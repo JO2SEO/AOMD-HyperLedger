@@ -4,7 +4,6 @@
 
 plugins {
     id 'application'
-    id 'checkstyle'
     id 'jacoco'
 }
 
@@ -38,19 +37,6 @@ application {
     mainClass = 'org.hyperledger.fabric.contract.ContractRouter'
 }
 
-checkstyle {
-    toolVersion '8.21'
-    configFile file("config/checkstyle/checkstyle.xml")
-}
-
-checkstyleMain {
-    source ='src/main/java'
-}
-
-checkstyleTest {
-    source ='src/test/java'
-}
-
 jacocoTestReport {
     dependsOn test
 }
@@ -74,5 +60,3 @@ test {
     }
 }
 
-check.dependsOn jacocoTestCoverageVerification
-installDist.dependsOn check
