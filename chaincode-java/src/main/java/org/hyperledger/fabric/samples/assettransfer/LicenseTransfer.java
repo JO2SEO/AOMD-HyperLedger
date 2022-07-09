@@ -35,8 +35,15 @@ public final class LicenseTransfer implements ContractInterface {
     }
 
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public void initLedger(final Context context) {
+    public void init(final Context context) {
         ChaincodeStub stub = context.getStub();
+
+        create(context, "license1", "title1", 1L, "publisher1", LocalDateTime.now(), "desc1", LocalDateTime.now(), "qualificationNumber1");
+        create(context, "license2", "title2", 2L, "publisher2", LocalDateTime.now(), "desc2", LocalDateTime.now(), "qualificationNumber2");
+        create(context, "license3", "title3", 3L, "publisher3", LocalDateTime.now(), "desc3", LocalDateTime.now(), "qualificationNumber3");
+        create(context, "license4", "title4", 4L, "publisher4", LocalDateTime.now(), "desc4", LocalDateTime.now(), "qualificationNumber4");
+        create(context, "license5", "title5", 5L, "publisher5", LocalDateTime.now(), "desc5", LocalDateTime.now(), "qualificationNumber5");
+        create(context, "license6", "title6", 6L, "publisher6", LocalDateTime.now(), "desc6", LocalDateTime.now(), "qualificationNumber6");
     }
 
     @Transaction(intent = Transaction.TYPE.SUBMIT)
