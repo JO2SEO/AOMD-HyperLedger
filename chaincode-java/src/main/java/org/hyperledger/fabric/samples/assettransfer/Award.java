@@ -10,28 +10,34 @@ import java.util.Objects;
 
 @DataType
 @Getter
-public class Award extends CommonAsset{
+public final class Award extends CommonAsset {
     @Property
     private String rank;
 
     public Award(
-            @JsonProperty("id") String id,
-            @JsonProperty("title") String title,
-            @JsonProperty("ownerId") Long ownerId,
-            @JsonProperty("publisher") String publisher,
-            @JsonProperty("publishedAt") LocalDateTime publishedAt,
-            @JsonProperty("createdAt") LocalDateTime createdAt,
-            @JsonProperty("rank") String rank
+            @JsonProperty("id") final String id,
+            @JsonProperty("title") final String title,
+            @JsonProperty("ownerId") final Long ownerId,
+            @JsonProperty("publisher") final String publisher,
+            @JsonProperty("publishedAt") final LocalDateTime publishedAt,
+            @JsonProperty("createdAt") final LocalDateTime createdAt,
+            @JsonProperty("rank") final String rank
     ) {
         super(id, title, ownerId, publisher, publishedAt, createdAt);
         this.rank = rank;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         Award award = (Award) o;
         return rank.equals(award.rank);
     }
@@ -43,14 +49,25 @@ public class Award extends CommonAsset{
 
     @Override
     public String toString() {
-        return "Award{" +
-                "id='" + super.getId() + '\'' +
-                ", title='" + super.getTitle() + '\'' +
-                ", ownerId=" + super.getOwnerId() +
-                ", publisher='" + super.getPublisher() + '\'' +
-                ", publishedAt=" + super.getPublisher() +
-                ", createdAt=" + super.getCreatedAt() +
-                ", rank='" + rank + '\'' +
-                '}';
+        return "Award{"
+                + "id='"
+                + getId()
+                + '\''
+                + ", title='"
+                + getTitle()
+                + '\''
+                + ", ownerId="
+                + getOwnerId()
+                + ", publisher='"
+                + getPublisher()
+                + '\''
+                + ", publishedAt="
+                + getPublishedAt()
+                + ", createdAt="
+                + getCreatedAt()
+                + ", rank='"
+                + rank
+                + '\''
+                + '}';
     }
 }

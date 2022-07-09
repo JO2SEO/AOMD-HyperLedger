@@ -10,7 +10,7 @@ import java.util.Objects;
 
 @DataType
 @Getter
-public class License extends CommonAsset {
+public final class License extends CommonAsset {
     @Property
     private String description;
     @Property
@@ -52,12 +52,12 @@ public class License extends CommonAsset {
     @Override
     public String toString() {
         return "License{" +
-                "id='" + super.getId() + '\'' +
-                ", title='" + super.getTitle() + '\'' +
-                ", ownerId=" + super.getOwnerId() +
-                ", publisher='" + super.getPublisher() + '\'' +
-                ", publishedAt=" + super.getPublisher() +
-                ", createdAt=" + super.getCreatedAt() +
+                "id='" + getId() + '\'' +
+                ", title='" + getTitle() + '\'' +
+                ", ownerId=" + getOwnerId() +
+                ", publisher='" + getPublisher() + '\'' +
+                ", publishedAt=" + getPublishedAt() +
+                ", createdAt=" + getCreatedAt() +
                 ", description='" + description + '\'' +
                 ", expireDate=" + expireDate +
                 ", qualificationNumber='" + qualificationNumber + '\'' +

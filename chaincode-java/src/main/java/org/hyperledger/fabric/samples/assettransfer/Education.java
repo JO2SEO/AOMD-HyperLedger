@@ -10,7 +10,7 @@ import java.util.Objects;
 
 @DataType
 @Getter
-public class Education extends CommonAsset {
+public final class Education extends CommonAsset {
     @Property
     private String state;
     @Property
@@ -48,12 +48,12 @@ public class Education extends CommonAsset {
     @Override
     public String toString() {
         return "Education{" +
-                "id='" + super.getId() + '\'' +
-                ", title='" + super.getTitle() + '\'' +
-                ", ownerId=" + super.getOwnerId() +
-                ", publisher='" + super.getPublisher() + '\'' +
-                ", publishedAt=" + super.getPublisher() +
-                ", createdAt=" + super.getCreatedAt() +
+                "id='" + getId() + '\'' +
+                ", title='" + getTitle() + '\'' +
+                ", ownerId=" + getOwnerId() +
+                ", publisher='" + getPublisher() + '\'' +
+                ", publishedAt=" + getPublishedAt() +
+                ", createdAt=" + getCreatedAt() +
                 ", state='" + state + '\'' +
                 ", departmentInfo='" + departmentInfo + '\'' +
                 '}';
