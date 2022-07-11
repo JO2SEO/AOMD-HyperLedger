@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Contract(
-        name = "aomd",
+        name = "licenseCC",
         info = @Info(
                 title = "Asset Transfer",
                 description = "Aomd asset transfer",
