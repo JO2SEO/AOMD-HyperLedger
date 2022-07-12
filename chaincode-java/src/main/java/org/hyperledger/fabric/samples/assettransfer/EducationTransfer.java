@@ -1,6 +1,8 @@
 package org.hyperledger.fabric.samples.assettransfer;
 
-import com.owlike.genson.Genson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.contract.ContractInterface;
 import org.hyperledger.fabric.contract.annotation.Contact;
@@ -30,20 +32,24 @@ import java.util.List;
                         email = "aomd@gmail.com",
                         name = "Jo2Seo",
                         url = "https://aomd.com"
+                )
         )
-    )
 )
 @Default
 public final class EducationTransfer implements ContractInterface {
-    private final Genson genson = new Genson();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private enum AssetTransferErrors {
         ASSET_NOT_FOUND,
         ASSET_ALREADY_EXISTS
     }
 
+    public EducationTransfer() {
+        objectMapper.registerModule(new JavaTimeModule());
+    }
+
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public void init(final Context context) {
+    public void init(final Context context) throws JsonProcessingException {
         ChaincodeStub stub = context.getStub();
 
         create(context, "education1", "title1", 1L, "publisher1", LocalDateTime.now(), "state1", "departmentInfo1");
@@ -64,7 +70,7 @@ public final class EducationTransfer implements ContractInterface {
             final LocalDateTime publishedAt,
             final String state,
             final String departmentInfo
-    ) {
+    ) throws JsonProcessingException {
         ChaincodeStub stub = context.getStub();
 
         if (exists(context, id)) {
@@ -74,7 +80,9 @@ public final class EducationTransfer implements ContractInterface {
         }
 
         Education education = new Education(id, title, ownerId, publisher, publishedAt, LocalDateTime.now(), state, departmentInfo);
-        String educationJson = genson.serialize(education);
+        String educationJson = objectMapper.writeValueAsString(education);
+        Education deserialize = objectMapper.readValue(educationJson, Education.class);
+        System.out.println(deserialize);
         stub.putStringState(id, educationJson);
 
         return education;
@@ -89,7 +97,7 @@ public final class EducationTransfer implements ContractInterface {
     }
 
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public Education read(final Context context, final String id) {
+    public Education read(final Context context, final String id) throws JsonProcessingException {
         ChaincodeStub stub = context.getStub();
         String json = stub.getStringState(id);
 
@@ -98,12 +106,12 @@ public final class EducationTransfer implements ContractInterface {
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_ALREADY_EXISTS.toString());
         }
-        Education education = genson.deserialize(json, Education.class);
+        Education education = objectMapper.readValue(json, Education.class);
         return education;
     }
 
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public String getAll(final Context context) {
+    public String getAll(final Context context) throws JsonProcessingException {
         ChaincodeStub stub = context.getStub();
 
         List<Education> queryResults = new ArrayList<>();
@@ -111,12 +119,12 @@ public final class EducationTransfer implements ContractInterface {
         QueryResultsIterator<KeyValue> results = stub.getStateByRange("", "");
 
         for (KeyValue result: results) {
-            Education education = genson.deserialize(result.getStringValue(), Education.class);
+            System.out.println(result.getStringValue());
+            Education education = objectMapper.readValue(result.getStringValue(), Education.class);
             queryResults.add(education);
-            System.out.println(education.toString());
         }
 
-        final String response = genson.serialize(queryResults);
+        final String response = objectMapper.writeValueAsString(queryResults);
 
         return response;
     }

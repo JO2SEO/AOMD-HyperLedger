@@ -1,6 +1,8 @@
 package org.hyperledger.fabric.samples.assettransfer;
 
-import com.owlike.genson.Genson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.contract.ContractInterface;
 import org.hyperledger.fabric.contract.annotation.Transaction;
@@ -30,15 +32,19 @@ import java.util.List;
                         name = "Jo2Seo",
                         url = "https://aomd.com")))
 public final class LicenseTransfer implements ContractInterface {
-    private final Genson genson = new Genson();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private enum AssetTransferErrors {
         ASSET_NOT_FOUND,
         ASSET_ALREADY_EXISTS
     }
+    
+    public LicenseTransfer() {
+        objectMapper.registerModule(new JavaTimeModule());
+    }
 
     @Transaction(intent = Transaction.TYPE.SUBMIT)
-    public void init(final Context context) {
+    public void init(final Context context) throws JsonProcessingException {
         ChaincodeStub stub = context.getStub();
 
         create(context, "license1", "title1", 1L, "publisher1", LocalDateTime.now(), "desc1", LocalDateTime.now(), "qualificationNumber1");
@@ -60,7 +66,7 @@ public final class LicenseTransfer implements ContractInterface {
             final String description,
             final LocalDateTime expireDate,
             final String qualificationNumber
-    ) {
+    ) throws JsonProcessingException {
         ChaincodeStub stub = context.getStub();
 
         if (exists(context, id)) {
@@ -70,7 +76,7 @@ public final class LicenseTransfer implements ContractInterface {
         }
 
         License license = new License(id, title, ownerId, publisher, publishedAt, LocalDateTime.now(), description, expireDate, qualificationNumber);
-        String licenseJson = genson.serialize(license);
+        String licenseJson = objectMapper.writeValueAsString(license);
         stub.putStringState(id, licenseJson);
 
         return license;
@@ -85,7 +91,7 @@ public final class LicenseTransfer implements ContractInterface {
     }
 
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public License read(final Context context, final String id) {
+    public License read(final Context context, final String id) throws JsonProcessingException {
         ChaincodeStub stub = context.getStub();
         String json = stub.getStringState(id);
 
@@ -94,12 +100,12 @@ public final class LicenseTransfer implements ContractInterface {
             System.out.println(errorMessage);
             throw new ChaincodeException(errorMessage, AssetTransferErrors.ASSET_ALREADY_EXISTS.toString());
         }
-        License license = genson.deserialize(json, License.class);
+        License license = objectMapper.readValue(json, License.class);
         return license;
     }
 
     @Transaction(intent = Transaction.TYPE.EVALUATE)
-    public String getAll(final Context context) {
+    public String getAll(final Context context) throws JsonProcessingException {
         ChaincodeStub stub = context.getStub();
 
         List<License> queryResults = new ArrayList<>();
@@ -107,12 +113,12 @@ public final class LicenseTransfer implements ContractInterface {
         QueryResultsIterator<KeyValue> results = stub.getStateByRange("", "");
 
         for (KeyValue result: results) {
-            License license = genson.deserialize(result.getStringValue(), License.class);
+            License license = objectMapper.readValue(result.getStringValue(), License.class);
             queryResults.add(license);
             System.out.println(license.toString());
         }
 
-        final String response = genson.serialize(queryResults);
+        final String response = objectMapper.writeValueAsString(queryResults);
 
         return response;
     }
