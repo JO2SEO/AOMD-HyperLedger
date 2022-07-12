@@ -13,3 +13,8 @@ log.txt
 
 chaincode-java/.gradle
 chaincode-java/build
+
+chaincode/*/.gradle
+chaincode/*/build
+
+*.tar.gz
