@@ -39,6 +39,9 @@ function deployCCOrgnization() {
     MSP_NAME=$4
     CC_NAME=$5
     CC_VERSION=$6
+    PEER_NAME=$7
+    PEER_PORT=$8
+    TARGET_NAME=$9
     # CC 배포를 위해 패키지화
     infoln "CC 배포를 위해 패키지화 합니다."
 
@@ -46,26 +49,31 @@ function deployCCOrgnization() {
     export FABRIC_CFG_PATH=$PWD/config
     export CORE_PEER_MSPCONFIGPATH=$PWD/.build/organizations/$ORG_GROUP_NAME/$ORG_NAME.aomd.com/users/Admin@$ORG_NAME.aomd.com/msp
 
-    peer lifecycle chaincode package $CC_NAME.tar.gz --path chaincode-java/build/install --lang java --label ${CC_NAME}_${CC_VERSION}
+    cd chaincode/$TARGET_NAME
+    ./gradlew installDist
+    cd ../..
+
+    peer lifecycle chaincode package $CC_NAME.tar.gz --path chaincode/$TARGET_NAME/build/install --lang java --label ${CC_NAME}_${CC_VERSION}
 
     # 패키지를 각 peer들에게 설치
-    deployCCPeer $1 $2 $3 $4 $5 $6 peer0 6051
+    deployCCPeer $1 $2 $3 $4 $5 $6 $7 $8
 
     # 패키지 approve 확인
     peer lifecycle chaincode checkcommitreadiness --channelID $CHANNEL_NAME --name $CC_NAME --version $CC_VERSION --sequence 1 --tls --cafile "${PWD}/.build/organizations/ordererOrganizations/orderer.aomd.com/orderers/orderer.aomd.com/msp/tlscacerts/tlsca.aomd.com-cert.pem" --output json
 
     # 패키지 commit
     infoln "CC 패키지를 commit 합니다."
-    peer lifecycle chaincode commit -o localhost:9050 --ordererTLSHostnameOverride orderer.aomd.com --channelID $CHANNEL_NAME --name $CC_NAME --version $CC_VERSION --sequence 1 --tls --cafile "${PWD}/.build/organizations/ordererOrganizations/orderer.aomd.com/orderers/orderer.aomd.com/msp/tlscacerts/tlsca.aomd.com-cert.pem" --peerAddresses localhost:6051 --tlsRootCertFiles "${PWD}/.build/organizations/$ORG_GROUP_NAME/$ORG_NAME.aomd.com/peers/peer0.$ORG_NAME.aomd.com/tls/ca.crt" 
+    peer lifecycle chaincode commit -o localhost:9050 --ordererTLSHostnameOverride orderer.aomd.com --channelID $CHANNEL_NAME --name $CC_NAME --version $CC_VERSION --sequence 1 --tls --cafile "${PWD}/.build/organizations/ordererOrganizations/orderer.aomd.com/orderers/orderer.aomd.com/msp/tlscacerts/tlsca.aomd.com-cert.pem" --peerAddresses localhost:$PEER_PORT --tlsRootCertFiles "${PWD}/.build/organizations/$ORG_GROUP_NAME/$ORG_NAME.aomd.com/peers/$PEER_NAME.$ORG_NAME.aomd.com/tls/ca.crt" 
     # --peerAddresses localhost:9051 --tlsRootCertFiles "${PWD}/organizations/$ORG_GROUP_NAME/$ORG_NAME.aomd.com/peers/peer0.org2.example.com/tls/ca.crt" // => org가 2개 이상일 때 사용
-    peer lifecycle chaincode querycommitted --channelID $CHANNEL_NAME --name $CC_NAME # --cafile "${PWD}/.build/organizations/ordererOrganizations/orderer.aomd.com/orderers/orderer.aomd.com/msp/tlscacerts/tlsca.aomd.com-cert.pem"
+    peer lifecycle chaincode querycommitted --channelID $CHANNEL_NAME --name $CC_NAME
 
-    peer chaincode invoke -o localhost:9050 --ordererTLSHostnameOverride orderer.aomd.com --tls --cafile "${PWD}/.build/organizations/ordererOrganizations/orderer.aomd.com/orderers/orderer.aomd.com/msp/tlscacerts/tlsca.aomd.com-cert.pem" -C $CHANNEL_NAME -n $CC_NAME --peerAddresses localhost:6051 --tlsRootCertFiles "${PWD}/.build/organizations/$ORG_GROUP_NAME/$ORG_NAME.aomd.com/peers/peer0.$ORG_NAME.aomd.com/tls/ca.crt" -c '{"function":"init","Args":[]}'
+    peer chaincode invoke -o localhost:9050 --ordererTLSHostnameOverride orderer.aomd.com --tls --cafile "${PWD}/.build/organizations/ordererOrganizations/orderer.aomd.com/orderers/orderer.aomd.com/msp/tlscacerts/tlsca.aomd.com-cert.pem" -C $CHANNEL_NAME -n $CC_NAME --peerAddresses localhost:$PEER_PORT --tlsRootCertFiles "${PWD}/.build/organizations/$ORG_GROUP_NAME/$ORG_NAME.aomd.com/peers/$PEER_NAME.$ORG_NAME.aomd.com/tls/ca.crt" -c '{"function":"init","Args":[]}'
 
     sleep 3
 
-    peer chaincode query -C educationchannel -n educationCC -c '{"Args":["getAll"]}'
+    peer chaincode query -C $CHANNEL_NAME -n $CC_NAME -c '{"Args":["getAll"]}'
 }
 
-deployCCOrgnization educationchannel educationOrganizations educationOrg1 EducationOrg1MSP educationCC 1.0
-# peer chaincode query -C educationchannel -n educationCC -c '{"Args":["getAll"]}'
+deployCCOrgnization educationchannel educationOrganizations educationOrg1 EducationOrg1MSP educationCC 1.0 peer0 6051 education
+deployCCOrgnization awardchannel awardOrganizations awardOrg1 AwardOrg1MSP awardCC 1.0 peer0 7051 award
+deployCCOrgnization licensechannel licenseOrganizations licenseOrg1 LicenseOrg1MSP licenseCC 1.0 peer0 8051 license
